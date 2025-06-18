@@ -44,7 +44,7 @@ class AppTheme {
     // TextThemes
     textTheme: TextTheme(
       bodyLarge: GoogleFonts.dmSerifText(
-        fontSize: 35.sp,
+        fontSize: 50.sp,
         fontWeight: FontWeight.w200,
         color: Colors.black,
       ),
@@ -57,6 +57,21 @@ class AppTheme {
         fontSize: 16.sp,
         fontWeight: FontWeight.w600,
         color: Colors.black,
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        alignment: Alignment.center,
+        minimumSize: WidgetStatePropertyAll(Size(80.w, 50.h)),
+        padding: WidgetStatePropertyAll(EdgeInsets.all(8.sp)),
+        splashFactory: NoSplash.splashFactory,
+        backgroundColor: WidgetStatePropertyAll(Colors.white),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadiusGeometry.circular(25.sp),
+            side: BorderSide(style: BorderStyle.none),
+          ),
+        ),
       ),
     ),
   );

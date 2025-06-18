@@ -15,7 +15,9 @@ class DarkRoundButton extends StatelessWidget {
         color: Theme.of(context).primaryColorDark,
         shape: BoxShape.circle,
       ),
-      child: Center(child: Icon(icon, size: 20.sp)),
+      child: Center(
+        child: Icon(icon, size: 20.sp, color: Colors.white),
+      ),
     );
   }
 }
