@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomeScreen(),
+        home: HomeScreen(notes: []),
         theme: AppTheme.lightMode,
       ),
     );

@@ -1,15 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/app/colors.dart';
+import 'package:notes/component/note_data.dart';
 import 'package:notes/widgets/dark_round_button.dart';
 import 'package:notes/widgets/glass_morphism.dart.dart';
 import 'package:notes/widgets/note_card.dart';
 import 'package:notes/widgets/to_do_list.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final List<NoteCard> notes;
+  const HomeScreen({super.key, required this.notes});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -54,102 +57,88 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [DarkRoundButton(icon: (Icons.menu_outlined))],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // My Notes
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.sp),
-              child: Text(
-                'MY\nNOTES',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(height: 1),
-              ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // My Notes
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.sp),
+            child: Text(
+              'MY\nNOTES',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1),
             ),
-            Gap(20.h),
-            // Filters
-            SizedBox(
-              height: 50.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: filters.length,
-                itemBuilder: (context, index) {
-                  final filter = filters[index];
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedFilter = filter;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: Chip(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadiusGeometry.circular(15),
-                          side: BorderSide(
-                            color: NotesColor.brightGrey.shade100,
-                          ),
-                        ),
-                        backgroundColor: _selectedFilter == filter
-                            ? NotesColor.notes
-                            : Theme.of(context).primaryColorLight,
-                        label: Text(filter),
-                        labelStyle: Theme.of(context).textTheme.bodySmall,
+          ),
+          Gap(20.h),
+          // Filters
+          SizedBox(
+            height: 50.h,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: filters.length,
+              itemBuilder: (context, index) {
+                final filter = filters[index];
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedFilter = filter;
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Chip(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(15),
+                        side: BorderSide(color: NotesColor.brightGrey.shade100),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            Gap(10.h),
-            NoteCard(
-              title: "Technical Drawing\n Fundamentals",
-              subtitle: "Class Notes ",
-              backgroundColor: NotesColor.notes,
-              imageAsset: 'assets/images/sketch_book.png',
-              wordButtonText: '250 words',
-              imageButtonText: '2 images',
-            ),
-            Gap(20.h),
-            // ...existing code...
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 15.sp),
-              padding: EdgeInsets.all(15.sp),
-              width: double.infinity,
-              height: 200,
-              decoration: BoxDecoration(
-                color: Color(0xFFFEE4E1),
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'To-Do List',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontFamily: GoogleFonts.lora().fontFamily,
+                      backgroundColor: _selectedFilter == filter
+                          ? NotesColor.notes
+                          : Theme.of(context).primaryColorLight,
+                      label: Text(filter),
+                      labelStyle: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: todoList.length,
-                      shrinkWrap: true,
-                      physics: AlwaysScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return ToDoListTile(
-                          title: todoList[index],
-                          ischecked: false,
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
-          ],
-        ),
+          ),
+          Gap(10.h),
+          SizedBox(height: 320.h, child: NotesPage()),
+          Gap(20.h),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 15.sp),
+            padding: EdgeInsets.all(15.sp),
+            width: double.infinity,
+            height: 200,
+            decoration: BoxDecoration(
+              color: Color(0xFFFEE4E1),
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'To-Do List',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontFamily: GoogleFonts.lora().fontFamily,
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: todoList.length,
+                    shrinkWrap: true,
+                    physics: AlwaysScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return ToDoListTile(
+                        title: todoList[index],
+                        ischecked: false,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: GlassMorphism(
