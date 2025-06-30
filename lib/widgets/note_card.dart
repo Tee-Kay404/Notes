@@ -4,26 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/app/colors.dart';
+import 'package:notes/component/note_data.dart';
 import 'package:notes/widgets/dark_round_button.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class NoteCard extends StatefulWidget {
-  final String title;
-  final String subtitle;
-  final String wordButtonText;
-  final String imageButtonText;
-  final String imageAsset;
-  final Color backgroundColor;
-
-  const NoteCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.imageAsset,
-    required this.backgroundColor,
-    required this.wordButtonText,
-    required this.imageButtonText,
-  });
+  const NoteCard({super.key});
 
   @override
   State<NoteCard> createState() => _NoteCardState();
@@ -37,10 +23,10 @@ class _NoteCardState extends State<NoteCard> {
   @override
   void initState() {
     super.initState();
-    _controller = PageController(viewportFraction: 0.8);
+    _controller = PageController(viewportFraction: 0.7);
 
     _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
-      if (_currentPage < 2) {
+      if (_currentPage < NoteData.notes.length - 1) {
         _currentPage++;
       } else {
         _currentPage = 0;
@@ -66,10 +52,12 @@ class _NoteCardState extends State<NoteCard> {
       children: [
         SizedBox(
           height: 340.h,
+          width: double.infinity,
           child: PageView.builder(
             controller: _controller,
-            itemCount: 3,
+            itemCount: NoteData.notes.length,
             itemBuilder: (context, index) {
+              final note = NoteData.notes[index];
               return AnimatedBuilder(
                 animation: _controller,
                 builder: (context, child) {
@@ -79,7 +67,7 @@ class _NoteCardState extends State<NoteCard> {
                     value = (1 - (value.abs() * 0.3)).clamp(0.0, 1.0);
                   }
                   return Center(
-                    child: Transform.scale(scale: value, child: cardItem()),
+                    child: Transform.scale(scale: value, child: cardItem(note)),
                   );
                 },
               );
@@ -90,7 +78,7 @@ class _NoteCardState extends State<NoteCard> {
         Center(
           child: SmoothPageIndicator(
             controller: _controller,
-            count: 3,
+            count: NoteData.notes.length, // ✅ indicator count
             effect: WormEffect(
               dotHeight: 8.h,
               dotWidth: 8.w,
@@ -103,24 +91,23 @@ class _NoteCardState extends State<NoteCard> {
     );
   }
 
-  Widget cardItem() {
+  Widget cardItem(Map<String, dynamic> note) {
     return Container(
       height: 320.h,
-      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: widget.backgroundColor,
+        color: note['backgroundColor'],
       ),
       child: Stack(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Image.asset(
-              widget.imageAsset,
+              note['imageAsset'], // ✅ image
               height: double.infinity,
               width: double.infinity,
               fit: BoxFit.fitWidth,
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               colorBlendMode: BlendMode.darken,
             ),
           ),
@@ -132,9 +119,9 @@ class _NoteCardState extends State<NoteCard> {
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  widget.backgroundColor.withOpacity(0.2),
-                  widget.backgroundColor.withOpacity(0.8),
-                  widget.backgroundColor.withOpacity(1),
+                  note['backgroundColor'].withOpacity(0.2),
+                  note['backgroundColor'].withOpacity(0.8),
+                  note['backgroundColor'].withOpacity(1.0),
                 ],
                 stops: const [0.0, 0.3, 0.6, 1.0],
               ),
@@ -153,7 +140,7 @@ class _NoteCardState extends State<NoteCard> {
               children: [
                 const Spacer(),
                 Text(
-                  widget.title,
+                  note['title'],
                   style: GoogleFonts.merriweather(
                     textStyle: Theme.of(
                       context,
@@ -162,7 +149,7 @@ class _NoteCardState extends State<NoteCard> {
                 ),
                 Gap(4),
                 Text(
-                  widget.subtitle,
+                  note['subtitle'],
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 Gap(15.h),
@@ -172,7 +159,7 @@ class _NoteCardState extends State<NoteCard> {
                       onPressed: () {},
                       style: Theme.of(context).textButtonTheme.style,
                       child: Text(
-                        widget.wordButtonText,
+                        note['wordButtonText'],
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -185,7 +172,7 @@ class _NoteCardState extends State<NoteCard> {
                       onPressed: () {},
                       style: Theme.of(context).textButtonTheme.style,
                       child: Text(
-                        widget.imageButtonText,
+                        note['imageButtonText'],
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
